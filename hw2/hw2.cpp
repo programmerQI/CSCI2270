@@ -4,6 +4,7 @@
 #include<stdlib.h>
 #define ARRAYSIZE_IGNOREWORDS 50
 #define STARTSIZE_UNIQUEWORDS 100
+const static char SPLITER = ' ';
 int arraysize_uniquewords = STARTSIZE_UNIQUEWORDS;
 int doubleTimes = 0;
 typedef struct DcNode{
@@ -23,12 +24,14 @@ struct WordItem{
 };
 DcLink initNode()
 {
+    // std::cout << "466" << std::endl;
     DcLink node = (DcLink)malloc(sizeof(DcNode));
     for(int i = 0; i < 26; i ++){
       node -> next[i] = NULL;
     }
     node -> isWord = false;
     node -> index = -1;
+    // std::cout << "467" << std::endl;
     return node;
 }
 void clearDc(DcLink root)
@@ -54,10 +57,17 @@ WordItem* doubleWordsArray(WordItem *array)
     doubleTimes ++;
     int newArraySize = arraysize_uniquewords * 2;
     WordItem *newArray = new WordItem[newArraySize];
+    std::cout << "990" << std::endl;
     for(int i = 0; i < arraysize_uniquewords; i ++){
       newArray[i] = array[i];
+      std::cout << newArray[i].word << "-" << newArray[i].count << " ";
     }
-    delete(array);
+    std::cout << std::endl;
+    std::cout << (array == NULL ? "NULL" : "NOT NULL") << std::endl;
+    std::cout << "991" << std::endl;
+    std::cout << (array == NULL ? "NULL" : "NOT NULL") << std::endl;
+    delete[] array;
+    std::cout << "992" << std::endl;
     array = NULL;
     arraysize_uniquewords = newArraySize;
     return newArray;
@@ -75,10 +85,12 @@ void getStopWords(const char *ignoreWordFileName, std::string ignoreWords[], DcL
     while(getline(in, line)){
       ignoreWords[cnt ++] = line;
       for(int i = 0; i < line.length(); i ++){
-        if(tmp -> next[i] == NULL){
-          tmp -> next[i] = initNode();
+        char c = line[i];
+        int ci = c - 'a';
+        if(tmp -> next[ci] == NULL){
+          tmp -> next[ci] = initNode();
         }
-        tmp = tmp -> next[i];
+        tmp = tmp -> next[ci];
       }
       tmp -> isWord = true;
     }
@@ -115,7 +127,55 @@ int getTotalNumberNonStopWords(WordItem uniqueWords[], int length){
     }
     return count;
 }
-int readText(const char *textfilename, WordItem uniquewords[], int numUqWords, DcLink root, int total)
+inline void insertWord(std::string word, WordItem **uniquewords, int *numUqWords, DcLink link)
+{
+    if(*numUqWords >= arraysize_uniquewords){
+      std::cout << "333" << std::endl;
+      (*uniquewords) = doubleWordsArray(*uniquewords);
+      std::cout << "334" << std::endl;
+    }
+    std::cout << "131" << std::endl;
+    WordItem* newItem = (*uniquewords) + (*numUqWords);
+    newItem -> word = word;
+    newItem -> link = link;
+    newItem -> count = 0;
+    link -> isWord = true;
+    link -> index = *numUqWords;
+    (*numUqWords) ++;
+    std::cout << "132" << std::endl;
+}
+int optLine(std::string line, WordItem **uniquewords, int *numUqWords, char spliter, DcLink root)
+{
+    int cnt = 0;
+    DcLink tmp = root;
+    line.append(" ");
+    std::string word = "";
+    std::cout << "121" << std::endl;
+    for(int i = 0; i < line.length(); i ++){
+      char c = line[i];
+      int ci = c - 'a';
+      if(c == spliter && ! word.empty()){
+        if(tmp -> isWord){
+          int index = tmp -> index;
+          (*uniquewords)[index].count ++;
+        } else {
+          insertWord(word, uniquewords, numUqWords, tmp);
+        }
+        word = "";
+        tmp = root;
+        cnt ++;
+      } else {
+        if(tmp -> next[ci] == NULL){
+          tmp -> next[ci] = initNode();
+        }
+        tmp = tmp -> next[ci];
+        word = word + c;
+      }
+    }
+    std::cout << "122" << std::endl;
+    return cnt;
+}
+int readText(const char *textfilename, WordItem **uniquewords, int *numUqWords, DcLink root, int total)
 {
     int cnt = total;
     std::string filename(textfilename);
@@ -123,39 +183,13 @@ int readText(const char *textfilename, WordItem uniquewords[], int numUqWords, D
     if(! in.is_open()){
       return -1;
     }
+    std::cout << "117" << std::endl;
     std::string line;
     while(getline(in, line)){
-
+      cnt = cnt + optLine(line, uniquewords, numUqWords, SPLITER, root);
     }
+    std::cout << "118" << std::endl;
     in.close();
-    return cnt;
-}
-int optLine(std::string line,WordItem uniquewords[], int numUqWords, char spliter, DcLink root)
-{
-    int cnt = 0;
-    DcLink tmp = root;
-    line.append(" ");
-    std::string word = "";
-    for(int i = 0; i < line.length(); i ++){
-      char c = line[i];
-      if(c == spliter && ! word.empty()){
-        if(tmp -> isWord){
-          int index = tmp -> index;
-          uniquewords[index].count ++;
-        } else {
-          
-        }
-        word = "";
-        tmp = root;
-        cnt ++;
-      } else {
-        if(tmp -> next[i] == NULL){
-          tmp -> next[i] = initNode();
-        }
-        tmp = tmp -> next[i];
-        word = word + c;
-      }
-    }
     return cnt;
 }
 void qSort(WordItem uniqueWords[], int begin, int end)
@@ -210,22 +244,29 @@ void printWordItemArray(WordItem array[], int size){
 }
 int main(int argc, char* argv[])
 {
-    if(argv[1] == NULL || argv[2] == NULL && argv[3] == NULL){
+    if(argv[1] == NULL || argv[2] == NULL || argv[3] == NULL){
       std::cout << "Usage: Assignment2Solution <number of words> <inputfilename.txt> <ignoreWordsfilename.txt>" << std::endl;
       return -1;
     }
     std::string ignoreWords[ARRAYSIZE_IGNOREWORDS];
     DcLink igroot = initNode();
-    getStopWords(argv[2], ignoreWords, igroot);
-    printStringArray(ignoreWords, ARRAYSIZE_IGNOREWORDS);
+    // getStopWords(argv[2], ignoreWords, igroot);
+    // printStringArray(ignoreWords, ARRAYSIZE_IGNOREWORDS);
 
-    // std::cout << "211" << std::endl;
+    std::cout << "211" << std::endl;
     WordItem *uniquewords = new WordItem[arraysize_uniquewords];
+    int totalwords, numuqwords;
+    totalwords = numuqwords = 0;
     DcLink uqroot = initNode();
+    totalwords = readText(argv[3], &uniquewords, &numuqwords, uqroot, totalwords);
+    std::cout << "111" << std::endl;
+    printWordItemArray(uniquewords, numuqwords);
 
     clearDc(igroot);
     igroot = NULL;
     clearDc(uqroot);
     uqroot = NULL;
+    delete[] uniquewords;
+    uniquewords = NULL;
     return 0;
 }
