@@ -157,18 +157,19 @@ int optLine(std::string line, WordItem **uniquewords, int *numUqWords, char spli
       char c = line[i];
       int ci = c - 'a';
       if(c == spliter && ! word.empty()){
-        if(isIgWord){
-
+        if(!(isIgWord && igtmp -> isWord)){
+          if(uqtmp -> isWord){
+            int index = uqtmp -> index;
+            (*uniquewords)[index].count ++;
+          } else {
+            insertWord(word, uniquewords, numUqWords, uqtmp);
+          }
         }
-        if(uqtmp -> isWord){
-          int index = uqtmp -> index;
-          (*uniquewords)[index].count ++;
-        } else {
-          insertWord(word, uniquewords, numUqWords, uqtmp);
-        }
-        word = "";
-        uqtmp = uqroot;
         cnt ++;
+        word = "";
+        isIgWord = true;
+        igtmp = igroot;
+        uqtmp = uqroot;
       } else {
         if(igtmp -> next[ci] == NULL){
           isIgWord = false;
