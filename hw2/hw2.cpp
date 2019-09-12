@@ -18,7 +18,6 @@ struct WordItem{
     DcLink link;
     WordItem() : word(""), count(0), link(NULL) {}
     ~WordItem(){
-      free(link);
       link = NULL;
     }
 };
@@ -57,17 +56,18 @@ WordItem* doubleWordsArray(WordItem *array)
     doubleTimes ++;
     int newArraySize = arraysize_uniquewords * 2;
     WordItem *newArray = new WordItem[newArraySize];
-    std::cout << "990" << std::endl;
+    //std::cout << "990" << std::endl;
     for(int i = 0; i < arraysize_uniquewords; i ++){
       newArray[i] = array[i];
       std::cout << newArray[i].word << "-" << newArray[i].count << " ";
     }
-    std::cout << std::endl;
-    std::cout << (array == NULL ? "NULL" : "NOT NULL") << std::endl;
-    std::cout << "991" << std::endl;
-    std::cout << (array == NULL ? "NULL" : "NOT NULL") << std::endl;
+    std::cout << std::endl << "-----------------" << std::endl;
+    //std::cout << std::endl;
+    //std::cout << (array == NULL ? "NULL" : "NOT NULL") << std::endl;
+    //std::cout << "991" << std::endl;
+    //std::cout << (array == NULL ? "NULL" : "NOT NULL") << std::endl;
     delete[] array;
-    std::cout << "992" << std::endl;
+    //std::cout << "992" << std::endl;
     array = NULL;
     arraysize_uniquewords = newArraySize;
     return newArray;
@@ -130,11 +130,11 @@ int getTotalNumberNonStopWords(WordItem uniqueWords[], int length){
 inline void insertWord(std::string word, WordItem **uniquewords, int *numUqWords, DcLink link)
 {
     if(*numUqWords >= arraysize_uniquewords){
-      std::cout << "333" << std::endl;
+      //std::cout << "333" << std::endl;
       (*uniquewords) = doubleWordsArray(*uniquewords);
       std::cout << "334" << std::endl;
     }
-    std::cout << "131" << std::endl;
+    //std::cout << "131" << std::endl;
     WordItem* newItem = (*uniquewords) + (*numUqWords);
     newItem -> word = word;
     newItem -> link = link;
@@ -142,40 +142,51 @@ inline void insertWord(std::string word, WordItem **uniquewords, int *numUqWords
     link -> isWord = true;
     link -> index = *numUqWords;
     (*numUqWords) ++;
-    std::cout << "132" << std::endl;
+    //std::cout << "132" << std::endl;
 }
-int optLine(std::string line, WordItem **uniquewords, int *numUqWords, char spliter, DcLink root)
+int optLine(std::string line, WordItem **uniquewords, int *numUqWords, char spliter, DcLink igroot, DcLink uqroot)
 {
     int cnt = 0;
-    DcLink tmp = root;
+    DcLink igtmp = igroot;
+    DcLink uqtmp = uqroot;
     line.append(" ");
     std::string word = "";
-    std::cout << "121" << std::endl;
+    bool isIgWord = true;;
+    //std::cout << "121" << std::endl;
     for(int i = 0; i < line.length(); i ++){
       char c = line[i];
       int ci = c - 'a';
       if(c == spliter && ! word.empty()){
-        if(tmp -> isWord){
-          int index = tmp -> index;
+        if(isIgWord){
+
+        }
+        if(uqtmp -> isWord){
+          int index = uqtmp -> index;
           (*uniquewords)[index].count ++;
         } else {
-          insertWord(word, uniquewords, numUqWords, tmp);
+          insertWord(word, uniquewords, numUqWords, uqtmp);
         }
         word = "";
-        tmp = root;
+        uqtmp = uqroot;
         cnt ++;
       } else {
-        if(tmp -> next[ci] == NULL){
-          tmp -> next[ci] = initNode();
+        if(igtmp -> next[ci] == NULL){
+          isIgWord = false;
         }
-        tmp = tmp -> next[ci];
+        if(isIgWord){
+          igtmp = igtmp -> next[ci];
+        }
+        if(uqtmp -> next[ci] == NULL){
+          uqtmp -> next[ci] = initNode();
+        }
+        uqtmp = uqtmp -> next[ci];
         word = word + c;
       }
     }
-    std::cout << "122" << std::endl;
+    //std::cout << "122" << std::endl;
     return cnt;
 }
-int readText(const char *textfilename, WordItem **uniquewords, int *numUqWords, DcLink root, int total)
+int readText(const char *textfilename, WordItem **uniquewords, int *numUqWords, DcLink igroot, DcLink uqroot, int total)
 {
     int cnt = total;
     std::string filename(textfilename);
@@ -183,12 +194,12 @@ int readText(const char *textfilename, WordItem **uniquewords, int *numUqWords, 
     if(! in.is_open()){
       return -1;
     }
-    std::cout << "117" << std::endl;
+    //std::cout << "117" << std::endl;
     std::string line;
     while(getline(in, line)){
-      cnt = cnt + optLine(line, uniquewords, numUqWords, SPLITER, root);
+      cnt = cnt + optLine(line, uniquewords, numUqWords, SPLITER, igroot, uqroot);
     }
-    std::cout << "118" << std::endl;
+    //std::cout << "118" << std::endl;
     in.close();
     return cnt;
 }
@@ -250,17 +261,18 @@ int main(int argc, char* argv[])
     }
     std::string ignoreWords[ARRAYSIZE_IGNOREWORDS];
     DcLink igroot = initNode();
-    // getStopWords(argv[2], ignoreWords, igroot);
+    getStopWords(argv[2], ignoreWords, igroot);
     // printStringArray(ignoreWords, ARRAYSIZE_IGNOREWORDS);
 
-    std::cout << "211" << std::endl;
+    //std::cout << "211" << std::endl;
     WordItem *uniquewords = new WordItem[arraysize_uniquewords];
     int totalwords, numuqwords;
     totalwords = numuqwords = 0;
     DcLink uqroot = initNode();
-    totalwords = readText(argv[3], &uniquewords, &numuqwords, uqroot, totalwords);
-    std::cout << "111" << std::endl;
-    printWordItemArray(uniquewords, numuqwords);
+    totalwords = readText(argv[3], &uniquewords, &numuqwords, igroot ,uqroot, totalwords);
+    std::cout << totalwords << " : " << numuqwords << std::endl;
+    //std::cout << "111" << std::endl;
+    //printWordItemArray(uniquewords, numuqwords);
 
     clearDc(igroot);
     igroot = NULL;
