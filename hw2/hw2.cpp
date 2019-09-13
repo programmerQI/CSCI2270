@@ -59,9 +59,9 @@ WordItem* doubleWordsArray(WordItem *array)
     //std::cout << "990" << std::endl;
     for(int i = 0; i < arraysize_uniquewords; i ++){
       newArray[i] = array[i];
-      std::cout << newArray[i].word << "-" << newArray[i].count << " ";
+      //std::cout << newArray[i].word << "-" << newArray[i].count << " ";
     }
-    std::cout << std::endl << "-----------------" << std::endl;
+    //std::cout << std::endl << "-----------------" << std::endl;
     //std::cout << std::endl;
     //std::cout << (array == NULL ? "NULL" : "NOT NULL") << std::endl;
     //std::cout << "991" << std::endl;
@@ -93,6 +93,7 @@ void getStopWords(const char *ignoreWordFileName, std::string ignoreWords[], DcL
         tmp = tmp -> next[ci];
       }
       tmp -> isWord = true;
+      tmp = root;
     }
     in.close();
 }
@@ -132,7 +133,7 @@ inline void insertWord(std::string word, WordItem **uniquewords, int *numUqWords
     if(*numUqWords >= arraysize_uniquewords){
       //std::cout << "333" << std::endl;
       (*uniquewords) = doubleWordsArray(*uniquewords);
-      std::cout << "334" << std::endl;
+      //std::cout << "334" << std::endl;
     }
     //std::cout << "131" << std::endl;
     WordItem* newItem = (*uniquewords) + (*numUqWords);
@@ -164,8 +165,8 @@ int optLine(std::string line, WordItem **uniquewords, int *numUqWords, char spli
           } else {
             insertWord(word, uniquewords, numUqWords, uqtmp);
           }
+          cnt ++;
         }
-        cnt ++;
         word = "";
         isIgWord = true;
         igtmp = igroot;
@@ -237,11 +238,11 @@ void arraySort(WordItem uniqueWords[], int length)
 {
     qSort(uniqueWords, 0, length - 1);
 }
-void printNext10(WordItem uniqueWords[], int N, int totalNumWords){
-    for(int i = 0; i < 10; i ++){
+void printNext10(WordItem uniqueWords[], int N, int total){
+    for(int i = 0; i < 10 && (i + N) < total; i ++){
       std::cout << std::fixed;
       std::cout << std::setprecision(4);
-      std::cout << 1.0 * uniqueWords[i + N].count / totalNumWords << " - " << uniqueWords[i + N].word << std::endl;
+      std::cout << 1.0 * uniqueWords[i + N].count / total << " - " << uniqueWords[i + N].word << std::endl;
     }
 }
 void printStringArray(std::string array[], int size){
@@ -271,9 +272,22 @@ int main(int argc, char* argv[])
     totalwords = numuqwords = 0;
     DcLink uqroot = initNode();
     totalwords = readText(argv[3], &uniquewords, &numuqwords, igroot ,uqroot, totalwords);
-    std::cout << totalwords << " : " << numuqwords << std::endl;
+    //std::cout << totalwords << " : " << numuqwords << std::endl;
     //std::cout << "111" << std::endl;
     //printWordItemArray(uniquewords, numuqwords);
+    arraySort(uniquewords, numuqwords);
+
+    std::cout << "Array doubled: " << doubleTimes << std::endl;
+    std::cout << "#" << std::endl;
+    std::cout << "Unique non-common words: " << numuqwords << std::endl;
+    std::cout << "#" << std::endl;
+    std::cout << "Total non-common words: " << totalwords << std::endl;
+    std::cout << "#" << std::endl;
+    std::cout << "Probability of next 10 words from rank 25" << std::endl;
+    std::cout << "---------------------------------------" << std::endl;
+
+    std::string n(argv[1]);
+    printNext10(uniquewords, std::stoi(n), totalwords);
 
     clearDc(igroot);
     igroot = NULL;
