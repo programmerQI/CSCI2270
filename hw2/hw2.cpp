@@ -2,13 +2,21 @@
 #include<iomanip>
 #include<fstream>
 #include<stdlib.h>
+#include<tgmath.h>
 #define ARRAYSIZE_IGNOREWORDS 50
 #define STARTSIZE_UNIQUEWORDS 100
 const static char SPLITER = ' ';
 int arraysize_uniquewords = STARTSIZE_UNIQUEWORDS;
 int doubleTimes = 0;
+std::string garb[STARTSIZE_UNIQUEWORDS];
+int numgarb = 0;
+// typedef struct DcNode{
+//     struct DcNode* next[26];
+//     bool isWord;
+//     int index;
+// }DcNode, *DcLink;
 typedef struct DcNode{
-    struct DcNode* next[26];
+    struct DcNode* next[256];
     bool isWord;
     int index;
 }DcNode, *DcLink;
@@ -21,11 +29,23 @@ struct WordItem{
       link = NULL;
     }
 };
+// DcLink initNode()
+// {
+//     // std::cout << "466" << std::endl;
+//     DcLink node = (DcLink)malloc(sizeof(DcNode));
+//     for(int i = 0; i < 26; i ++){
+//       node -> next[i] = NULL;
+//     }
+//     node -> isWord = false;
+//     node -> index = -1;
+//     // std::cout << "467" << std::endl;
+//     return node;
+// }
 DcLink initNode()
 {
     // std::cout << "466" << std::endl;
     DcLink node = (DcLink)malloc(sizeof(DcNode));
-    for(int i = 0; i < 26; i ++){
+    for(int i = 0; i < 256; i ++){
       node -> next[i] = NULL;
     }
     node -> isWord = false;
@@ -33,12 +53,25 @@ DcLink initNode()
     // std::cout << "467" << std::endl;
     return node;
 }
+// void clearDc(DcLink root)
+// {
+//     if(root == NULL){
+//       return;
+//     }
+//     for(int i = 0; i < 26; i ++){
+//       if(root -> next[i] != NULL){
+//         clearDc(root -> next[i]);
+//       }
+//     }
+//     free(root);
+//     root = NULL;
+// }
 void clearDc(DcLink root)
 {
     if(root == NULL){
       return;
     }
-    for(int i = 0; i < 26; i ++){
+    for(int i = 0; i < 256; i ++){
       if(root -> next[i] != NULL){
         clearDc(root -> next[i]);
       }
@@ -86,7 +119,8 @@ void getStopWords(const char *ignoreWordFileName, std::string ignoreWords[], DcL
       ignoreWords[cnt ++] = line;
       for(int i = 0; i < line.length(); i ++){
         char c = line[i];
-        int ci = c - 'a';
+        // int ci = c - 'a';
+        int ci = c - 0;
         if(tmp -> next[ci] == NULL){
           tmp -> next[ci] = initNode();
         }
@@ -139,7 +173,7 @@ inline void insertWord(std::string word, WordItem **uniquewords, int *numUqWords
     WordItem* newItem = (*uniquewords) + (*numUqWords);
     newItem -> word = word;
     newItem -> link = link;
-    newItem -> count = 0;
+    newItem -> count = 1;
     link -> isWord = true;
     link -> index = *numUqWords;
     (*numUqWords) ++;
@@ -156,7 +190,20 @@ int optLine(std::string line, WordItem **uniquewords, int *numUqWords, char spli
     //std::cout << "121" << std::endl;
     for(int i = 0; i < line.length(); i ++){
       char c = line[i];
-      int ci = c - 'a';
+      // if((c < 'a' || c > 'z') && c != ' '){
+      //   while((c < 'a' || c > 'z') && c != ' '){
+      //     i ++;
+      //     c = line[i];
+      //   }
+      //   word = "";
+      //   isIgWord = true;
+      //   igtmp = igroot;
+      //   uqtmp = uqroot;
+      //   cnt ++;
+      //   continue;
+      // }
+      // int ci = c - 'a';
+      int ci = c - 0;
       if(c == spliter && ! word.empty()){
         if(!(isIgWord && igtmp -> isWord)){
           if(uqtmp -> isWord){
@@ -242,7 +289,8 @@ void printNext10(WordItem uniqueWords[], int N, int total){
     for(int i = 0; i < 10 && (i + N) < total; i ++){
       std::cout << std::fixed;
       std::cout << std::setprecision(4);
-      std::cout << 1.0 * uniqueWords[i + N].count / total << " - " << uniqueWords[i + N].word << std::endl;
+      float f = 1.0 * uniqueWords[i + N].count / total;
+      std::cout << f  << " - " << uniqueWords[i + N].word << std::endl;
     }
 }
 void printStringArray(std::string array[], int size){
@@ -263,7 +311,7 @@ int main(int argc, char* argv[])
     }
     std::string ignoreWords[ARRAYSIZE_IGNOREWORDS];
     DcLink igroot = initNode();
-    getStopWords(argv[2], ignoreWords, igroot);
+    getStopWords(argv[3], ignoreWords, igroot);
     // printStringArray(ignoreWords, ARRAYSIZE_IGNOREWORDS);
 
     //std::cout << "211" << std::endl;
@@ -271,7 +319,7 @@ int main(int argc, char* argv[])
     int totalwords, numuqwords;
     totalwords = numuqwords = 0;
     DcLink uqroot = initNode();
-    totalwords = readText(argv[3], &uniquewords, &numuqwords, igroot ,uqroot, totalwords);
+    totalwords = readText(argv[2], &uniquewords, &numuqwords, igroot ,uqroot, totalwords);
     //std::cout << totalwords << " : " << numuqwords << std::endl;
     //std::cout << "111" << std::endl;
     //printWordItemArray(uniquewords, numuqwords);
@@ -283,10 +331,10 @@ int main(int argc, char* argv[])
     std::cout << "#" << std::endl;
     std::cout << "Total non-common words: " << totalwords << std::endl;
     std::cout << "#" << std::endl;
-    std::cout << "Probability of next 10 words from rank 25" << std::endl;
+    std::string n(argv[1]);
+    std::cout << "Probability of next 10 words from rank " << std::stoi(n) << std::endl;
     std::cout << "---------------------------------------" << std::endl;
 
-    std::string n(argv[1]);
     printNext10(uniquewords, std::stoi(n), totalwords);
 
     clearDc(igroot);
