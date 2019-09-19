@@ -35,10 +35,15 @@ void CountryNetwork::insertCountry(Country* previous, string countryName)
     newCountry -> message = "";
     newCountry -> numberMessages = 0;
     newCountry -> next = NULL;
-    if(previous == NULL){
+    if(head == NULL){
+      head = newCountry;
+      std::cout << "adding: " << countryName << " (HEAD)" << std::endl;
+    } else if (previous == NULL){
+      newCountry -> next = head;
       head = newCountry;
       std::cout << "adding: " << countryName << " (HEAD)" << std::endl;
     } else {
+      newCountry -> next = previous -> next;
       previous -> next = newCountry;
       std::cout << "adding: " << countryName << " (prev: " << previous -> name << ")" << std::endl;
     }
@@ -54,7 +59,7 @@ void CountryNetwork::loadDefaultSetup()
     if(head != NULL){
       return;
     }
-    std::string names[] = {"UnitedStates", "Canada", "Brazil", "India", "China", "Austraila"};
+    std::string names[] = {"United States", "Canada", "Brazil", "India", "China", "Australia"};
     Country *tmp = NULL;
     for(std::string i : names){
       insertCountry(tmp, i);
@@ -75,7 +80,7 @@ Country* CountryNetwork::searchNetwork(string countryName)
     if(head == NULL){
       return NULL;
     }
-    Country *country;
+    Country *country = head;
     while(country != NULL){
       if(country -> name == countryName){
         return country;
@@ -95,7 +100,7 @@ Country* CountryNetwork::searchNetwork(string countryName)
  */
 void CountryNetwork::transmitMsg(string receiver, string message)
 {
-    if(head = NULL){
+    if(head == NULL){
       std::cout << "Empty list" << std::endl;
       return;
     }
@@ -103,8 +108,8 @@ void CountryNetwork::transmitMsg(string receiver, string message)
     while(tmp != NULL){
       tmp -> message = message;
       tmp -> numberMessages ++;
+      std::cout << tmp -> name << " [# messages received: " << tmp -> numberMessages << "] received: " << tmp -> message << std::endl;
       if(tmp -> name == receiver){
-        std::cout << tmp -> name << " [# messages received: " << tmp -> numberMessages << "] received: " << tmp -> message << std::endl;
         return;
       }
       tmp = tmp -> next;
@@ -118,5 +123,14 @@ void CountryNetwork::transmitMsg(string receiver, string message)
  */
 void CountryNetwork::printPath()
 {
-
+    if(head == NULL){
+      return;
+    }
+    Country *tmp = head;
+    while(tmp != NULL){
+      std::cout << tmp -> name << " -> ";
+      tmp = tmp -> next;
+    }
+    std::cout << "NULL" << std::endl;
+    return;
 }
