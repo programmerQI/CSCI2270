@@ -4,7 +4,7 @@
 /* LEAVE THIS FILE AS IS! DO NOT MODIFY ANYTHING! =]            */
 /****************************************************************/
 
-#pragma once
+//#pragma once
 #include <iostream>
 using namespace std;
 
@@ -33,4 +33,5 @@ class CountryNetwork {
         Country* searchNetwork(string countryName);          // TODO
         void transmitMsg(string receiver, string msg); // TODO
         void printPath();                              // TODO
+        void cleanNetwork();
 };

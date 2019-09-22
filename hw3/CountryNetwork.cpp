@@ -61,6 +61,7 @@ void CountryNetwork::loadDefaultSetup()
     }
     std::string names[] = {"United States", "Canada", "Brazil", "India", "China", "Australia"};
     Country *tmp = NULL;
+    //std::cout << "adding: prev: [HEAD]" << std::endl;
     for(std::string i : names){
       insertCountry(tmp, i);
       tmp = head;
@@ -105,6 +106,10 @@ void CountryNetwork::transmitMsg(string receiver, string message)
       return;
     }
     Country *tmp = head;
+    if(searchNetwork(receiver) == NULL){
+      std::cout << "Country not found" << std::endl;
+      return;
+    }
     while(tmp != NULL){
       tmp -> message = message;
       tmp -> numberMessages ++;
@@ -114,7 +119,6 @@ void CountryNetwork::transmitMsg(string receiver, string message)
       }
       tmp = tmp -> next;
     }
-    std::cout << "Country not found" << std::endl;
 }
 
 /*
@@ -123,7 +127,10 @@ void CountryNetwork::transmitMsg(string receiver, string message)
  */
 void CountryNetwork::printPath()
 {
+    std::cout << "== CURRENT PATH ==" << std::endl;
     if(head == NULL){
+      std::cout << "nothing in path" << std::endl;
+      std::cout << "===" << std::endl;
       return;
     }
     Country *tmp = head;
@@ -132,5 +139,23 @@ void CountryNetwork::printPath()
       tmp = tmp -> next;
     }
     std::cout << "NULL" << std::endl;
+    std::cout << "===" << std::endl;
     return;
 }
+
+ // Clean the memory
+ void CountryNetwork::cleanNetwork(){
+   if(head == NULL){
+     return;
+   }
+   Country *node = head;
+   Country *tmp = NULL;
+   while(node != NULL){
+     //std::cout << "Delete..." << std::endl;
+     tmp = node -> next;
+     delete node;
+     node = tmp;
+   }
+   head = NULL;
+   return;
+ }
