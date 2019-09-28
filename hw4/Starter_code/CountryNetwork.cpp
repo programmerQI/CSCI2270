@@ -15,9 +15,12 @@ using namespace std;
  * @param none
  * @return none
  */
-CountryNetwork::CountryNetwork()
-{
-}
+ CountryNetwork::CountryNetwork()
+ {
+     head = new Country();
+     head -> name = "*";
+ }
+
 
 
 /*
@@ -26,6 +29,13 @@ CountryNetwork::CountryNetwork()
  */
 bool CountryNetwork::isEmpty()
 {
+    if(head == NULL){
+      return true;
+    }
+    if(head -> next == NULL){
+      return true;
+    }
+    return false;
 }
 
 
@@ -36,8 +46,26 @@ bool CountryNetwork::isEmpty()
  * @param countryName name of the new Country
  * @return none
  */
-void CountryNetwork::insertCountry(Country* previous, string countryName) {
-}
+ void CountryNetwork::insertCountry(Country* previous, string countryName)
+ {
+     if(head == NULL){
+       return;
+     }
+     Country *newCountry = new Country();
+     newCountry -> name = countryName;
+     newCountry -> message = "";
+     newCountry -> numberMessages = 0;
+     newCountry -> next = NULL;
+     if (previous == NULL){
+       newCountry -> next = head -> next;
+       head -> next = newCountry;
+       std::cout << "adding: " << countryName << " (HEAD)" << std::endl;
+     } else {
+       newCountry -> next = previous -> next;
+       previous -> next = newCountry;
+       std::cout << "adding: " << countryName << " (prev: " << previous -> name << ")" << std::endl;
+     }
+ }
 
 
 /*
@@ -46,6 +74,7 @@ void CountryNetwork::insertCountry(Country* previous, string countryName) {
  * @return none
  */
 void CountryNetwork::deleteCountry(string countryName) {
+
 }
 
 /*
@@ -53,8 +82,23 @@ void CountryNetwork::deleteCountry(string countryName) {
  * @param none
  * @return none
  */
-void CountryNetwork::loadDefaultSetup() {
-}
+ void CountryNetwork::loadDefaultSetup()
+ {
+     if(head == NULL){
+       return;
+     }
+     //std::string names[] = {"United States", "Canada", "Brazil", "India", "China", "Australia"};
+     std::string names[] = {"Australia", "China", "India", "Brazil", "Canada", "United States"};
+     //Country *tmp = NULL;
+     //std::cout << "adding: prev: [HEAD]" << std::endl;
+     for(std::string i : names){
+       insertCountry(NULL, i);
+       // tmp = head;
+       // while(tmp -> next != NULL){
+       //   tmp = tmp -> next;
+       // }
+     }
+ }
 
 
 /*
@@ -63,8 +107,20 @@ void CountryNetwork::loadDefaultSetup() {
  * @return pointer to node of countryName, or NULL if not found
  * @see insertCountry, deletecountry
  */
-Country* CountryNetwork::searchNetwork(string countryName) {
-}
+ Country* CountryNetwork::searchNetwork(string countryName)
+ {
+     if(head == NULL){
+       return NULL;
+     }
+     Country *country = head -> next;
+     while(country != NULL){
+       if(country -> name == countryName){
+         return country;
+       }
+       country = country -> next;
+     }
+     return NULL;
+ }
 
 
 /*
@@ -95,6 +151,20 @@ void CountryNetwork::reverseEntireNetwork() {
  * Purpose: prints the current list nicely
  * @param ptr head of list
  */
-void CountryNetwork::printPath() {
-
-}
+ void CountryNetwork::printPath()
+ {
+     std::cout << "== CURRENT PATH ==" << std::endl;
+     if(head == NULL){
+       std::cout << "nothing in path" << std::endl;
+       std::cout << "===" << std::endl;
+       return;
+     }
+     Country *tmp = head;
+     while(tmp != NULL){
+       std::cout << tmp -> name << " -> ";
+       tmp = tmp -> next;
+     }
+     std::cout << "NULL" << std::endl;
+     std::cout << "===" << std::endl;
+     return;
+ }
