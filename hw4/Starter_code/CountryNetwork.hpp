@@ -4,7 +4,6 @@
 /* LEAVE THIS FILE AS IS! DO NOT MODIFY ANYTHING! =]            */
 /****************************************************************/
 
-#pragma once
 #include <iostream>
 
 // Country: node struct that will be stored in the CountryNetwork

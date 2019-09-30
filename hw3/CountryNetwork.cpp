@@ -20,6 +20,13 @@ CountryNetwork::CountryNetwork()
     head = NULL;
 }
 
+bool CountryNetwork :: isEmpty()
+{
+    if(head == NULL){
+      return true;
+    }
+    return false;
+}
 
 /*
  * Purpose: Add a new Country to the network

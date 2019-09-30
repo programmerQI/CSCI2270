@@ -17,8 +17,7 @@ using namespace std;
  */
  CountryNetwork::CountryNetwork()
  {
-     head = new Country();
-     head -> name = "*";
+     head = NULL;
  }
 
 
@@ -48,17 +47,17 @@ bool CountryNetwork::isEmpty()
  */
  void CountryNetwork::insertCountry(Country* previous, string countryName)
  {
-     if(head == NULL){
-       return;
-     }
      Country *newCountry = new Country();
      newCountry -> name = countryName;
      newCountry -> message = "";
      newCountry -> numberMessages = 0;
      newCountry -> next = NULL;
-     if (previous == NULL){
-       newCountry -> next = head -> next;
-       head -> next = newCountry;
+     if(head == NULL){
+       head = newCountry;
+       std::cout << "adding: " << countryName << " (HEAD)" << std::endl;
+     } else if (previous == NULL){
+       newCountry -> next = head;
+       head = newCountry;
        std::cout << "adding: " << countryName << " (HEAD)" << std::endl;
      } else {
        newCountry -> next = previous -> next;
@@ -74,7 +73,28 @@ bool CountryNetwork::isEmpty()
  * @return none
  */
 void CountryNetwork::deleteCountry(string countryName) {
-
+    if(head == NULL){
+      return;
+    }
+    Country *i = new Country();
+    i -> next = head;
+    while(i -> next != NULL){
+      if(i -> next -> name == countryName){
+        Country *tmp = i -> next;
+        if(i -> next == head){
+          head = tmp -> next;
+        } else {
+          i -> next = tmp -> next;
+        }
+        delete tmp;
+        tmp = NULL;
+        return;
+      }
+      i = i -> next;
+    }
+    std::cout << "Country does not exist." << std::endl;
+    i = NULL;
+    return;
 }
 
 /*
@@ -84,19 +104,18 @@ void CountryNetwork::deleteCountry(string countryName) {
  */
  void CountryNetwork::loadDefaultSetup()
  {
-     if(head == NULL){
+     if(head != NULL){
        return;
      }
-     //std::string names[] = {"United States", "Canada", "Brazil", "India", "China", "Australia"};
-     std::string names[] = {"Australia", "China", "India", "Brazil", "Canada", "United States"};
-     //Country *tmp = NULL;
+     std::string names[] = {"United States", "Canada", "Brazil", "India", "China", "Australia"};
+     Country *tmp = NULL;
      //std::cout << "adding: prev: [HEAD]" << std::endl;
      for(std::string i : names){
-       insertCountry(NULL, i);
-       // tmp = head;
-       // while(tmp -> next != NULL){
-       //   tmp = tmp -> next;
-       // }
+       insertCountry(tmp, i);
+       tmp = head;
+       while(tmp -> next != NULL){
+         tmp = tmp -> next;
+       }
      }
  }
 
@@ -112,7 +131,7 @@ void CountryNetwork::deleteCountry(string countryName) {
      if(head == NULL){
        return NULL;
      }
-     Country *country = head -> next;
+     Country *country = head;
      while(country != NULL){
        if(country -> name == countryName){
          return country;
@@ -129,6 +148,19 @@ void CountryNetwork::deleteCountry(string countryName) {
  * @return none
  */
 void CountryNetwork::deleteEntireNetwork() {
+    if(head == NULL){
+      return;
+    }
+    Country *i = head;
+    while(i != NULL){
+      std::cout << "deleting: " << i -> name << std::endl;
+      Country *tmp = i;
+      i = i -> next;
+      delete tmp;
+      tmp = NULL;
+    }
+    std::cout << "Deleted network" << std::endl;
+    head = NULL;
 }
 
 /*
@@ -137,14 +169,74 @@ void CountryNetwork::deleteEntireNetwork() {
  * @param number elements to be moved from the end of the list to the beginning
  * @return none
  */
- void CountryNetwork :: rotateNetwork(int n) {
-}
+//  void CountryNetwork :: rotateNetwork(int n) {
+//    if(head == NULL){
+//      return;
+//    }
+//    reverseEntireNetwork();
+//    int cnt = 1;
+//    Country *tmp = head;
+//    do{
+//      cnt ++;
+//      tmp = tmp -> next;
+//    } while (cnt < n && tmp != NULL);
+//    Country *mark = tmp;
+//    while(tmp -> next != NULL){
+//      tmp = tmp -> next;
+//    }
+//    tmp -> next = head;
+//    head = mark -> next;
+//    mark -> next = NULL;
+//    reverseEntireNetwork();
+//    tmp = NULL;
+//    mark = NULL;
+// }
+
+  void CountryNetwork :: rotateNetwork(int n) {
+    if(head == NULL){
+      std::cout << "Linked List is Empty" << std::endl;
+      return;
+    }
+    int cnt = 1;
+    Country *tmp = head;
+    while(cnt < n && tmp != NULL) {
+      tmp = tmp -> next;
+      cnt ++;
+    }
+    if(cnt != n){
+      std::cout << "Rotate not possible" << std::endl;
+      return;
+    }
+    Country *mt = tmp;
+    while(tmp -> next != NULL) {
+      tmp = tmp -> next;
+    }
+    tmp -> next = head;
+    head = mt -> next;
+    mt -> next = NULL;
+    tmp = NULL;
+    mt = NULL;
+    std::cout << "Rotate Complete" << std::endl;
+  }
 
 /*
  * Purpose: reverse the entire network
  * @param ptr head of list
  */
 void CountryNetwork::reverseEntireNetwork() {
+  if(head == NULL){
+    return;
+  }
+  Country *pre = head;
+  Country *c = pre -> next;
+  pre -> next = NULL;
+  while(c != NULL){
+    Country *nxt = c -> next;
+    c -> next = pre;
+    pre = c;
+    c = nxt;
+  }
+  head = pre;
 }
 
 /*
