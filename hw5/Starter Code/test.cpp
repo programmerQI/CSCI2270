@@ -1,16 +1,10 @@
 #include <iostream>
-void fun(int* a)
+int f(int x)
 {
-    *a = 5;
-}
-void fun(int &a)
-{
-    a = 1;
+    return (x > 0) ? x*f(x - 1) : 2;
 }
 int main()
 {
-    int a = 5;
-    fun(a);
-    std::cout << a << std::endl;
-    return 0;
+    int i = f(f(2));
+    std::cout << i << std::endl;
 }
