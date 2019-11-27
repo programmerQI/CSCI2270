@@ -55,6 +55,7 @@ int Kits::readDataFromFile(std::string filename)
       }
     }
   }
+  // std::cout << "data_size:" << data -> size << std::endl;
   datasets.push_back(data);
   f.close();
   std::cout << data -> size << " data from " << filename << std::endl;

@@ -24,6 +24,7 @@ public:
   int lookup(int value);
   int del(int value);
   int insert(int value);
+  int update(int value);
   double getFator();
 };
 #endif

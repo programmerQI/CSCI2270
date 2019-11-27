@@ -15,7 +15,7 @@ HashLL::HashLL(const int type)
 
 int HashLL::hash(int value)
 {
-  switch(value) {
+  switch(type) {
     case 1:
       return value % TABLE_SIZE;
     case 2:
@@ -27,21 +27,22 @@ int HashLL::hash(int value)
 
 LLNode* HashLL::search(int index, int value)
 {
-  std::cout << "911" << std::endl;
+  //std::cout << "911" << std::endl;
   if(table[index] == NULL) {
     return NULL;
   }
-  std::cout << "941" << std::endl;
+  //std::cout << "index:" << index << std::endl;
+  //std::cout << "941" << std::endl;
   LLNode* n = table[index] -> next;
-  std::cout << "951" << std::endl;
+  //std::cout << "951" << std::endl;
   while(n != NULL) {
-    std::cout << "961" << std::endl;
+    //std::cout << "961" << std::endl;
     if(n -> value == value) {
       return n;
     }
     n = n -> next;
   }
-  std::cout << "999" << std::endl;
+  //std::cout << "999" << std::endl;
   return NULL;
 }
 
@@ -79,26 +80,30 @@ int HashLL::del(int value)
 
 int HashLL::insert(int value)
 {
-  std::cout << value << std::endl;
+  //std::cout << "value:" << value << std::endl;
   int index = hash(value);
+  //std::cout << "hash:" << index << std::endl;
   if(search(index, value) != NULL) {
     return -1;
   }
-  std::cout << "123" << std::endl;
+  //std::cout << "123" << std::endl;
   LLNode *n = table[index];
   while(n -> next != NULL) {
     n = n -> next;
   }
-  std::cout << "212" << std::endl;
+  //std::cout << "212" << std::endl;
   LLNode *newLLNode = new LLNode(n, value);
   n -> next = newLLNode;
   tablesize = tablesize + 1;
-  std::cout << "244" << std::endl;
+  //std::cout << "244" << std::endl;
   return tablesize;
 }
 
 double HashLL::getFator()
 {
-  return 1.0 * TABLE_SIZE / tablesize;
+  //)std::cout << "TABLE_SIZE:" << TABLE_SIZE << std::endl;
+  //std::cout << "tablesize:" << tablesize << std::endl;
+  //std::cout << "factor:" << 1.0 * tablesize / TABLE_SIZE << std::endl;
+  return 1.0 * tablesize / TABLE_SIZE;
 }
 #endif

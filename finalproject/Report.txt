@@ -1,0 +1,88 @@
+40000 data from dataSetA.csv
+dataSetA.csv has been loaded.
+20000 data from dataSetC.csv
+dataSetC.csv has been loaded.
+
+Load data to the load factor : 0.1
+---------------------------------
+Hash linklist execute 100 insetions.
+execution time: 1.3e-05
+Hash BST execute 100 insetions.
+execution time: 1.1e-05
+---------------------------------
+---------------------------------
+Hash linklist execute 100 deletions.
+execution time: 4e-06
+Hash BST execute 100 deletions.
+execution time: 4e-06
+---------------------------------
+
+Load data to the load factor : 0.2
+---------------------------------
+Hash linklist execute 100 insetions.
+execution time: 9e-06
+Hash BST execute 100 insetions.
+execution time: 1e-05
+---------------------------------
+---------------------------------
+Hash linklist execute 100 deletions.
+execution time: 5e-06
+Hash BST execute 100 deletions.
+execution time: 5e-06
+---------------------------------
+
+Load data to the load factor : 0.5
+---------------------------------
+Hash linklist execute 100 insetions.
+execution time: 1.2e-05
+Hash BST execute 100 insetions.
+execution time: 1.2e-05
+---------------------------------
+---------------------------------
+Hash linklist execute 100 deletions.
+execution time: 6e-06
+Hash BST execute 100 deletions.
+execution time: 6e-06
+---------------------------------
+
+Load data to the load factor : 0.7
+---------------------------------
+Hash linklist execute 100 insetions.
+execution time: 1.1e-05
+Hash BST execute 100 insetions.
+execution time: 1.1e-05
+---------------------------------
+---------------------------------
+Hash linklist execute 100 deletions.
+execution time: 7e-06
+Hash BST execute 100 deletions.
+execution time: 7e-06
+---------------------------------
+
+Load data to the load factor : 0.9
+---------------------------------
+Hash linklist execute 100 insetions.
+execution time: 1.2e-05
+Hash BST execute 100 insetions.
+execution time: 1.2e-05
+---------------------------------
+---------------------------------
+Hash linklist execute 100 deletions.
+execution time: 7e-06
+Hash BST execute 100 deletions.
+execution time: 7e-06
+---------------------------------
+
+Load data to the load factor : 1
+---------------------------------
+Hash linklist execute 100 insetions.
+execution time: 9e-06
+Hash BST execute 100 insetions.
+execution time: 1.1e-05
+---------------------------------
+---------------------------------
+Hash linklist execute 100 deletions.
+execution time: 7e-06
+Hash BST execute 100 deletions.
+execution time: 7e-06
+---------------------------------
