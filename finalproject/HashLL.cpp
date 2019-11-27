@@ -1,25 +1,34 @@
 #include "HashLL.hpp"
 #include <iostream>
+#include <cmath>
 
-HashLL::HashLL()
+HashLL::HashLL(int type)
 {
-  for(Node* n : table) {
-    n = new Node();
+  this -> type = type;
+  for(LLNode* n : table) {
+    n = new LLNode();
   }
   tablesize = 0;
 }
 
 int HashLL::hash(int value)
 {
-  return value % TABLE_SIZE;
+  switch(value) {
+    case 1:
+      return value % TABLE_SIZE;
+    case 2:
+      return (value / TABLE_SIZE) % TABLE_SIZE;
+    default:
+      return -1;
+  }
 }
 
-Node* HashLL::search(int index, int value)
+LLNode* HashLL::search(int index, int value)
 {
   if(table[index] == NULL) {
     return NULL;
   }
-  Node* n = table[index] -> next;
+  LLNode* n = table[index] -> next;
   while(n != NULL) {
     if(n -> value == value) {
       return n;
@@ -47,12 +56,12 @@ int HashLL::del(int value)
     return -1;
   }
   int index = hash(value);
-  Node *n = search(index, value);
+  LLNode *n = search(index, value);
   if(n == NULL) {
     return 0;
   }
-  Node *pre = n -> pre;
-  Node *nex = n -> next;
+  LLNode *pre = n -> pre;
+  LLNode *nex = n -> next;
   pre -> next = nex;
   if(nex != NULL) {
     nex -> pre = pre;
@@ -67,14 +76,19 @@ int HashLL::insert(int value)
   if(search(index, value) != NULL) {
     return -1;
   }
-  Node *n = table[index];
+  LLNode *n = table[index];
   while(n -> next != NULL) {
     n = n -> next;
   }
-  Node *newNode = new Node(n, value);
-  n -> next = newNode;
+  LLNode *newLLNode = new LLNode(n, value);
+  n -> next = newLLNode;
   tablesize = tablesize + 1;
   return tablesize;
+}
+
+double HashLL::getFator()
+{
+  return 1.0 * TABLE_SIZE / tablesize;
 }
 
 int main()
