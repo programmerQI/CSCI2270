@@ -1,12 +1,13 @@
 #include <iostream>
 struct BSTNode{
   struct BSTNode *parent;
+  bool isleftsub;
   int value;
   struct BSTNode *leftChild;
   struct BSTNode *rightChild;
   struct BSTNode *next;
-  BSTNode() : parent(NULL), value(0), next(NULL), leftChild(NULL), rightChild(NULL), next(NULL) {}
-  BSTNode(BSTNode *p, int v) : parent(p), value(v), leftChild(NULL), rightChild(NULL), next(NULL) {}
+  BSTNode(BSTNode *n) : parent(NULL), isleftsub(true), value(0), leftChild(NULL), rightChild(NULL), next(n) {}
+  BSTNode(BSTNode *p, bool l, int v) : parent(p), isleftsub(l), value(v), leftChild(NULL), rightChild(NULL), next(NULL) {}
 };
 class HashBST
 {
