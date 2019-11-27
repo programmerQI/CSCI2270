@@ -1,12 +1,14 @@
+#ifndef HASHLL_CPP
+#define HASHLL_CPP
 #include "HashLL.hpp"
 #include <iostream>
 #include <cmath>
 
-HashLL::HashLL(int type)
+HashLL::HashLL(const int type)
 {
   this -> type = type;
-  for(LLNode* n : table) {
-    n = new LLNode();
+  for(int i = 0; i < TABLE_SIZE; i ++) {
+    table[i] = new LLNode();
   }
   tablesize = 0;
 }
@@ -25,16 +27,21 @@ int HashLL::hash(int value)
 
 LLNode* HashLL::search(int index, int value)
 {
+  std::cout << "911" << std::endl;
   if(table[index] == NULL) {
     return NULL;
   }
+  std::cout << "941" << std::endl;
   LLNode* n = table[index] -> next;
+  std::cout << "951" << std::endl;
   while(n != NULL) {
+    std::cout << "961" << std::endl;
     if(n -> value == value) {
       return n;
     }
     n = n -> next;
   }
+  std::cout << "999" << std::endl;
   return NULL;
 }
 
@@ -72,17 +79,21 @@ int HashLL::del(int value)
 
 int HashLL::insert(int value)
 {
+  std::cout << value << std::endl;
   int index = hash(value);
   if(search(index, value) != NULL) {
     return -1;
   }
+  std::cout << "123" << std::endl;
   LLNode *n = table[index];
   while(n -> next != NULL) {
     n = n -> next;
   }
+  std::cout << "212" << std::endl;
   LLNode *newLLNode = new LLNode(n, value);
   n -> next = newLLNode;
   tablesize = tablesize + 1;
+  std::cout << "244" << std::endl;
   return tablesize;
 }
 
@@ -90,8 +101,4 @@ double HashLL::getFator()
 {
   return 1.0 * TABLE_SIZE / tablesize;
 }
-
-int main()
-{
-    return 0;
-}
+#endif

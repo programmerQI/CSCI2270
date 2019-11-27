@@ -1,3 +1,5 @@
+#ifndef KITS_CPP
+#define KITS_CPP
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -55,17 +57,30 @@ int Kits::readDataFromFile(std::string filename)
   }
   datasets.push_back(data);
   f.close();
-  return 1;
+  std::cout << data -> size << " data from " << filename << std::endl;
+  return data -> size;
 }
 
+Data* Kits::getDataSet(int index)
+{
+  if(index < 0 || index >= datasets.size()) {
+    return NULL;
+  }
+  return datasets[index];
+}
 
+Data* Kits::getDataSet(std::string name)
+{
+  for(auto d : datasets) {
+    if(d -> name == name) {
+      return d;
+    }
+  }
+  return NULL;
+}
 
 int Kits::getNumset()
 {
     return datasets.size();
 }
-
-int main()
-{
-  return 0;
-}
+#endif

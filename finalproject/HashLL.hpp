@@ -1,5 +1,6 @@
+#ifndef HASHLL_H
+#define HASHLL_H
 #include <iostream>
-
 // Define the LLNode struct
 struct LLNode{
   struct LLNode* next;
@@ -19,9 +20,10 @@ private:
   int hash(int value);
   LLNode* search(int index, int value);
 public:
-  HashLL(int type);
+  HashLL(const int type);
   int lookup(int value);
   int del(int value);
   int insert(int value);
   double getFator();
 };
+#endif

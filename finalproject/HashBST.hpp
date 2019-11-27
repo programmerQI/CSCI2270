@@ -1,3 +1,5 @@
+#ifndef HASHBST_H
+#define HASHBST_H
 #include <iostream>
 struct BSTNode{
   struct BSTNode *parent;
@@ -19,9 +21,10 @@ private:
   int hash(int value);
   BSTNode* search(int index, int value);
 public:
-  HashBST(int type);
+  HashBST(const int type);
   int lookup(int value);
   int del(int value);
   int insert(int value);
   double getFator();
 };
+#endif

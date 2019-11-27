@@ -1,7 +1,9 @@
+#ifndef HASHBST_CPP
+#define HASHBST_CPP
 #include "HashBST.hpp"
 #include <iostream>
 
-HashBST::HashBST(int type)
+HashBST::HashBST(const int type)
 {
   this -> type = type;
   for(BSTNode* n : table) {
@@ -132,8 +134,4 @@ double HashBST::getFator()
 {
   return 1.0 * TABLE_SIZE / tablesize;
 }
-
-int main()
-{
-  return 0;
-}
+#endif
